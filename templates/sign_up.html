@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <main class="form-signin w-25 m-auto">
+    <form class="text-center">
+      <h1 class="h3 mb-3 fw-normal">Регистрация</h1>
+      <h6>Укажите электронную почту</h6>
+      <div class="form-floating mb-1">
+        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com">
+        <label for="floatingInput">Адрес эл. почты</label>
+      </div>
+      <h6>Укажите имя</h6>
+      <div class="form-floating mb-1">
+        <input type="name" class="form-control" id="floatingName" placeholder="Name">
+        <label for="floatingInput">Имя</label>
+      </div>
+      <h6>Укажите фамилию</h6>
+      <div class="form-floating mb-1">
+        <input type="surname" class="form-control" id="floatingSurname" placeholder="Surname">
+        <label for="floatingInput">Фамилия</label>
+      </div>
+      <h6>
+        Дата рождения
+        <input type="date" name="birth" min="1907-03-04" max="2005-05-01" />
+      </h6>
+      <h6>Придумайте пароль</h6>
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <label for="floatingPassword">Пароль</label>
+      </div>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Зарегестрироваться</button>
+    </form>
+  </main>
+{% endblock %}
