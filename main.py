@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from data import db_session
 
 app = Flask(__name__)
 
@@ -18,5 +19,10 @@ def signup():
     return render_template('sign_up.html', title='Регистрация')
 
 
-if __name__ == '__main__':
+def main():
+    db_session.global_init("main.db")
     app.run(host='127.0.0.1', port=5000, debug=True)
+
+
+if __name__ == '__main__':
+    main()
