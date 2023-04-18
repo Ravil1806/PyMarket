@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main class="form-signin w-50 m-auto">
+        <h1>Новое объявление</h1>
+        <form method="post">
+            <div class="form-group mb-2">
+                <label for="catSelect">Выберите категорию</label>
+                <select class="form-control" id="categorySelect" name="category">
+                    {% for category in categories %}
+                    <option>{{category}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group mb-2">
+                <label for="itemnameInput">Название объявления</label>
+                <input type="text" name="title" class="form-control" id="itemnameInput" placeholder="Название товара">
+            </div>
+            <div class="form-group mb-2">
+                <label for="form-check">Состояние</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="condition" id="new" value="new">
+                    <label class="form-check-label" for="new">
+                        Новый
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="condition" id="used" value="used" checked>
+                    <label class="form-check-label" for="used">
+                        Б/у
+                    </label>
+                </div>
+            </div>
+            <div class="form-group mb-2">
+                <label for="description">Описание объявления</label>
+                <textarea class="form-control" id="description" rows="6" name="description"></textarea>
+            </div>
+            <div class="form-group mb-2">
+                <label for="priceInput">Цена в рублях</label>
+                <input type="number" name="price" class="form-control" id="priceInput" placeholder="0" min="0" max="1000000000">
+            </div>
+            <div class="form-group mb-2">
+                <label for="itemsPhotos">Загрузите фотографии</label>
+                <input type="file" name="photos" class="form-control-file" id="itemsPhotos" multiple accept="image/*">
+            </div>
+        </form>
+        <form action="/">
+            <button type="submit" class="btn btn-primary">Разместить</button>
+        </form>
+    </main>
+{% endblock %}
