@@ -1,34 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <main class="form-signin w-25 m-auto">
-    <form class="text-center">
-      <h1 class="h3 mb-3 fw-normal">Регистрация</h1>
-      <h6>Укажите электронную почту</h6>
-      <div class="form-floating mb-1">
-        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com">
-        <label for="floatingInput">Адрес эл. почты</label>
-      </div>
-      <h6>Укажите имя</h6>
-      <div class="form-floating mb-1">
-        <input type="name" class="form-control" id="floatingName" placeholder="Name">
-        <label for="floatingInput">Имя</label>
-      </div>
-      <h6>Укажите фамилию</h6>
-      <div class="form-floating mb-1">
-        <input type="surname" class="form-control" id="floatingSurname" placeholder="Surname">
-        <label for="floatingInput">Фамилия</label>
-      </div>
-      <h6>Придумайте пароль</h6>
-      <div class="form-floating mb-1">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-        <label for="floatingPassword">Пароль</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="password" class="form-control" id="floatingConfirmPassword" placeholder="ConfirmPassword">
-        <label for="floatingConfirmPassword">Подтвердите пароль</label>
-      </div>
-      <button class="w-100 btn btn-lg btn-primary" type="submit">Зарегестрироваться</button>
-    </form>
-  </main>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notification is-danger">
+    {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+<form method="POST" id="regform">
+    <main class="form-signin w-25 m-auto">
+        <form class="text-center">
+            <h1 class="h3 mb-3 fw-normal">Регистрация</h1>
+            <h6>Укажите электронную почту</h6>
+            <div class="form-floating mb-1">
+                <input required type="email" name="email" class="form-control" id="floatingEmail"
+                       placeholder="name@example.com" form="regform">
+                <label for="floatingInput">Адрес эл. почты</label>
+            </div>
+            <h6>Укажите имя</h6>
+            <div class="form-floating mb-1">
+                <input required type="name" name="name" class="form-control" id="floatingName" placeholder="Name"
+                       form="regform">
+                <label for="floatingInput">Имя</label>
+            </div>
+            <h6>Укажите фамилию</h6>
+            <div class="form-floating mb-1">
+                <input required type="surname" name="surname" class="form-control" id="floatingSurname"
+                       placeholder="Surname" form="regform">
+                <label for="floatingInput">Фамилия</label>
+            </div>
+            <h6>Придумайте пароль</h6>
+            <div class="form-floating mb-1">
+                <input required type="password" name="password" class="form-control" id="floatingPassword"
+                       placeholder="Password" minlength="8" form="regform">
+                <label for="floatingPassword">Пароль</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input required type="password" name="password2" class="form-control" id="floatingConfirmPassword"
+                       placeholder="ConfirmPassword" minlength="8" form="regform">
+                <label for="floatingConfirmPassword">Подтвердите пароль</label>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Зарегестрироваться</button>
+        </form>
+    </main>
+</form>
 {% endblock %}

@@ -1,12 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, flash
+from werkzeug.security import generate_password_hash, check_password_hash
 from data import db_session
 from data.item import Item
+from data.user import User
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
 
 categories = ['Одежда/обувь/аксессуары', 'Бижутерия/украшения',
               'Косметика/парфюмерия', 'Бытовая техника для дома/кухни/',
@@ -20,6 +18,9 @@ categories = ['Одежда/обувь/аксессуары', 'Бижутери�
               'Коллекционные предметы', 'Музыкальные инструменты',
               'Животные/товары для животных']
 
+db_session.global_init("main.db")
+session = db_session.create_session()
+
 
 @app.route('/')
 def index():
@@ -31,12 +32,38 @@ def signin():
     return render_template('sign_in.html', title='Авторизация')
 
 
-@app.route('/sign_up', methods=['GET', 'POST'])
+@app.route('/sign_up')
 def signup():
     return render_template('sign_up.html', title='Регистрация')
 
 
-@app.route('/add_item', methods=['GET', 'POST'])  # Доработать!!!!!!!!!!!
+@app.route('/sign_up', methods=['POST'])
+def signup_post():
+    if len(request.form['password']) > 8 and \
+            request.form['password'] == request.form['password2']:
+
+        email = request.form['email']
+        name = request.form['name']
+        surname = request.form['surname']
+        hashed_password = generate_password_hash(request.form['password'])
+
+        user = User.query.filter_by(
+            email=email).first()
+        if user:
+            flash('Аккаунт с данной эл. почтой уже существует')
+            return redirect('/sign_up')
+        new_user = User(email=email, name=name, surname=surname,
+                        hashed_password=hashed_password)
+        try:
+            session.add(new_user)
+            session.commit()
+            return redirect('/')
+        except Exception as e:
+            return f'{e}'
+
+
+
+@app.route('/add_item')
 def additem():
     if request.method == 'POST':
         item = Item()
@@ -45,14 +72,13 @@ def additem():
         item.condition = request.form['condition']
         item.description = request.form['description']
         item.price = request.form['price']
-        item.photos = request.form['photos']
+        # item.photos = request.files['photos']
         try:
-            session = db_session.create_session('main.db')
             session.add(item)
             session.commit()
-            return redirect('/')  # Добавить сообщение об успехе
-        except Exception:
-            return redirect('/sign_up')  # Добавить сообщение об ошибке
+            return redirect('/')
+        except Exception as e:
+            return f'{e}'
     else:
         return render_template('add_item.html', title='Новое объявление',
                                categories=categories)
