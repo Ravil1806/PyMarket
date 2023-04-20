@@ -1,10 +1,11 @@
 import datetime
 import sqlalchemy
+from flask_login import UserMixin
 from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-class User(SqlAlchemyBase):
+class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'user'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -16,5 +17,8 @@ class User(SqlAlchemyBase):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     phone_number = sqlalchemy.Column(sqlalchemy.String)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
-                                      default=datetime.datetime.now)
+                                     default=datetime.datetime.now)
     news = orm.relationship("Item", back_populates='user')
+
+    def __repr__(self):
+        return f'{self.email} {self.name} {self.surname} {self.hashed_password}'

@@ -3,7 +3,7 @@
 {% block content %}
 {% with messages = get_flashed_messages() %}
 {% if messages %}
-<div class="notification is-danger">
+<div class="notification is-danger w-25 m-auto">
     {{ messages[0] }}
 </div>
 {% endif %}
@@ -20,13 +20,13 @@
             </div>
             <h6>Укажите имя</h6>
             <div class="form-floating mb-1">
-                <input required type="name" name="name" class="form-control" id="floatingName" placeholder="Name"
+                <input required type="text" name="name" class="form-control" id="floatingName" placeholder="Name"
                        form="regform">
                 <label for="floatingInput">Имя</label>
             </div>
             <h6>Укажите фамилию</h6>
             <div class="form-floating mb-1">
-                <input required type="surname" name="surname" class="form-control" id="floatingSurname"
+                <input required type="text" name="surname" class="form-control" id="floatingSurname"
                        placeholder="Surname" form="regform">
                 <label for="floatingInput">Фамилия</label>
             </div>

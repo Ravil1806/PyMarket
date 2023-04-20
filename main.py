@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, redirect, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_required
 from data import db_session
 from data.item import Item
 from data.user import User
 
 app = Flask(__name__)
+app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
+
 
 categories = ['Одежда/обувь/аксессуары', 'Бижутерия/украшения',
               'Косметика/парфюмерия', 'Бытовая техника для дома/кухни/',
@@ -29,41 +32,52 @@ def index():
 
 @app.route('/sign_in', methods=['GET', 'POST'])
 def signin():
-    return render_template('sign_in.html', title='Авторизация')
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = session.query(User).filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.hashed_password, password):
+                return redirect('/')
+            else:
+                flash('Неверный пароль')
+                return redirect('/sign_in')
+        else:
+            flash('Аккаунта с данной почтой не существует')
+            return redirect('/sign_in')
+    else:
+        return render_template('sign_in.html', title='Авторизация')
 
 
-@app.route('/sign_up')
+@app.route('/sign_out', methods=['GET', 'POST'])
+# @login_required
+def signout():
+    pass
+
+
+@app.route('/sign_up', methods=['GET', 'POST'])
 def signup():
+    if request.method == 'POST':
+        user = User()
+        user.email = request.form['email']
+        user.name = request.form['name']
+        user.surname = request.form['surname']
+        user.hashed_password = generate_password_hash(request.form['password'])
+        if session.query(User).filter_by(email=user.email).first():
+            flash('Аккаунт с данной эл. почтой уже существует')
+            return redirect('/sign_up')
+        if request.form['password'] != request.form['password2']:
+            flash('Пароли не совпадают')
+            return redirect('/sign_up')
+        else:
+            session.add(user)
+            session.commit()
+            return redirect('/')
     return render_template('sign_up.html', title='Регистрация')
 
 
-@app.route('/sign_up', methods=['POST'])
-def signup_post():
-    if len(request.form['password']) > 8 and \
-            request.form['password'] == request.form['password2']:
-
-        email = request.form['email']
-        name = request.form['name']
-        surname = request.form['surname']
-        hashed_password = generate_password_hash(request.form['password'])
-
-        user = User.query.filter_by(
-            email=email).first()
-        if user:
-            flash('Аккаунт с данной эл. почтой уже существует')
-            return redirect('/sign_up')
-        new_user = User(email=email, name=name, surname=surname,
-                        hashed_password=hashed_password)
-        try:
-            session.add(new_user)
-            session.commit()
-            return redirect('/')
-        except Exception as e:
-            return f'{e}'
-
-
-
-@app.route('/add_item')
+@app.route('/add_item', methods=['GET', 'POST'])
+# @login_required
 def additem():
     if request.method == 'POST':
         item = Item()

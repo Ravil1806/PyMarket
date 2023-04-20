@@ -1,16 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notification is-danger w-25 m-auto">
+    {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
 <form method="POST" id="loginform">
   <main class="form-signin w-25 m-auto">
     <form class="text-center">
       <h1 class="h3 mb-3 fw-normal">Вход</h1>
       <div class="form-floating mb-1">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" form="loginform">
+        <input required type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com" form="loginform">
         <label for="floatingInput">Адрес эл. почты</label>
       </div>
       <div class="form-floating mb-3">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" form="loginform">
+        <input required type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" form="loginform">
         <label for="floatingPassword">Пароль</label>
       </div>
       <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
