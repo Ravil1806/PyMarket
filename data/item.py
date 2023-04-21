@@ -5,7 +5,7 @@ from .db_session import SqlAlchemyBase
 
 
 class Item(SqlAlchemyBase):
-    __tablename__ = 'item'
+    __tablename__ = 'items'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
@@ -14,13 +14,12 @@ class Item(SqlAlchemyBase):
     condition = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
-    photos = sqlalchemy.Column(sqlalchemy.BLOB, nullable=False)  # доработать
+    photos = sqlalchemy.Column(sqlalchemy.BLOB)  # доработать
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
 
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                sqlalchemy.ForeignKey("user.id"),
-                                default='me')
+                                sqlalchemy.ForeignKey("users.id"))
     user = orm.relationship('User')
 
     def __repr__(self):

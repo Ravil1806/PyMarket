@@ -6,7 +6,7 @@ from .db_session import SqlAlchemyBase
 
 
 class User(SqlAlchemyBase, UserMixin):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
@@ -18,7 +18,7 @@ class User(SqlAlchemyBase, UserMixin):
     phone_number = sqlalchemy.Column(sqlalchemy.String)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
-    news = orm.relationship("Item", back_populates='user')
+    items = orm.relationship("Item", back_populates='user')
 
     def __repr__(self):
         return f'{self.email} {self.name} {self.surname} {self.hashed_password}'

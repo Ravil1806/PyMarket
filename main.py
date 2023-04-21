@@ -1,6 +1,8 @@
+import datetime
+
 from flask import Flask, render_template, request, redirect, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_required
+from flask_login import login_required, LoginManager, login_user, logout_user, current_user
 from data import db_session
 from data.item import Item
 from data.user import User
@@ -10,7 +12,7 @@ app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
 
 
 categories = ['Одежда/обувь/аксессуары', 'Бижутерия/украшения',
-              'Косметика/парфюмерия', 'Бытовая техника для дома/кухни/',
+              'Косметика/парфюмерия', 'Бытовая техника для дома/кухни',
               'Мебель/интерьер', 'Товары для кухни', 'Продукты питания',
               'Товары для ремонта/строительства', 'Аудио-/видео-электроника',
               'Игры/приставки', 'Компьютеры/ноутбуки',
@@ -23,6 +25,16 @@ categories = ['Одежда/обувь/аксессуары', 'Бижутери�
 
 db_session.global_init("main.db")
 session = db_session.create_session()
+
+login_manager = LoginManager()
+login_manager.login_view = '/sign_in'
+login_manager.login_message = 'Необходимо войти в свой аккаунт'
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return session.get(User, int(user_id))
 
 
 @app.route('/')
@@ -38,7 +50,8 @@ def signin():
         user = session.query(User).filter_by(email=email).first()
         if user:
             if check_password_hash(user.hashed_password, password):
-                return redirect('/')
+                login_user(user, remember=True)
+                return redirect('/profile')
             else:
                 flash('Неверный пароль')
                 return redirect('/sign_in')
@@ -50,9 +63,10 @@ def signin():
 
 
 @app.route('/sign_out', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def signout():
-    pass
+    logout_user()
+    return redirect('/')
 
 
 @app.route('/sign_up', methods=['GET', 'POST'])
@@ -77,7 +91,7 @@ def signup():
 
 
 @app.route('/add_item', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def additem():
     if request.method == 'POST':
         item = Item()
@@ -86,6 +100,7 @@ def additem():
         item.condition = request.form['condition']
         item.description = request.form['description']
         item.price = request.form['price']
+        item.user_id = current_user.id
         # item.photos = request.files['photos']
         try:
             session.add(item)
@@ -96,6 +111,29 @@ def additem():
     else:
         return render_template('add_item.html', title='Новое объявление',
                                categories=categories)
+
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html', name=current_user.name,
+                           surname=current_user.surname,
+                           email=current_user.email,
+                           number=current_user.phone_number,
+                           date=current_user.created_date.strftime("%d.%m.%Y"),
+                           items=len([i for i in current_user.items]),
+                           title='Личний кабинет')
+
+
+@app.route('/edit_profile')
+@login_required
+def editprofile():
+    return render_template('edit_profile.html', title='Редактирвоание профиля',
+                           name=current_user.name,
+                           surname=current_user.surname,
+                           email=current_user.email,
+                           number=current_user.phone_number,
+                           address=current_user.address)
 
 
 def main():
