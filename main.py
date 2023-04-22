@@ -39,7 +39,8 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template('base.html', title='Главная страница')
+    return render_template('index.html', title='Главная страница',
+                           items=session.query(Item))
 
 
 @app.route('/sign_in', methods=['GET', 'POST'])
@@ -121,14 +122,26 @@ def profile():
                            email=current_user.email,
                            number=current_user.phone_number,
                            date=current_user.created_date.strftime("%d.%m.%Y"),
+                           address=current_user.address,
                            items=len([i for i in current_user.items]),
                            title='Личний кабинет')
 
 
-@app.route('/edit_profile')
+@app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def editprofile():
-    return render_template('edit_profile.html', title='Редактирвоание профиля',
+    if request.method == 'POST':
+        current_user.name = request.form['name']
+        current_user.surname = request.form['surname']
+        current_user.address = request.form['address']
+        current_user.phone_number = request.form['phone_number']
+        try:
+            session.commit()
+            return redirect('/profile')
+        except Exception as e:
+            return f'{e}'
+    else:
+        return render_template('edit_profile.html', title='Редактирвоание профиля',
                            name=current_user.name,
                            surname=current_user.surname,
                            email=current_user.email,

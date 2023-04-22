@@ -23,3 +23,8 @@ h1 {
     position: relative;
     padding: 1.25rem 2.5rem 1.25rem 1.5rem;
 }
+
+.container-l {
+    max-width: 400px;
+    margin-left: 190px
+}

@@ -1,57 +1,62 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container rounded bg-white mt-5 mb-5">
-    <div class="row">
-        <div class="col-md-3 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><span
-                    class="font-weight-bold">{{current_user.name}} {{current_user.surname}}</span><span
-                    class="text-black-50">{{current_user.email}}</span><span> </span></div>
-        </div>
-        <div class="col-md-5 border-right">
-            <div class="p-3 py-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-right">Информация о профиле</h4>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <label class="labels">Имя</label>
-                        <input type="text" class="form-control" placeholder="name" value="{{name}}">
+<form method="POST" id="editForm">
+    <div class="container rounded bg-white mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><span
+                        class="font-weight-bold">{{current_user.name}} {{current_user.surname}}</span><span
+                        class="text-black-50">{{current_user.email}}</span></div>
+            </div>
+            <div class="col-md-5 border-right">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Информация о профиле</h4>
                     </div>
-                    <div class="col-md-6"><label class="labels">Фамилия</label>
-                        <input type="text" class="form-control" value="{{surname}}" placeholder="surname">
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="labels">Имя</label>
+                            <input name="name" type="text" class="form-control" placeholder="name" value="{{name}}"
+                                   form="editForm">
+                        </div>
+                        <div class="col-md-6"><label class="labels">Фамилия</label>
+                            <input name="surname" type="text" class="form-control" value="{{surname}}"
+                                   placeholder="surname" form="editForm">
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-2">
                     {% if number %}
                     <div class="col-md-12">
                         <label class="labels">Номер телефона</label>
-                        <input type="text" class="form-control" placeholder="Введите номер телефона" value="{{number}}">
+                        <input name="phone_number" type="text" class="form-control" placeholder="Введите номер телефона"
+                               value="{{number}}" form="editForm">
                     </div>
                     {% else %}
                     <div class="col-md-12">
                         <label class="labels">Номер телефона</label>
-                        <input type="tel" class="form-control" placeholder="Введите номер телефона" value="" maxlength="12">
+                        <input name="phone_number" type="tel" class="form-control" placeholder="Введите номер телефона"
+                               value="" maxlength="12" form="editForm">
                     </div>
                     {% endif %}
                     {% if address %}
                     <div class="col-md-12">
                         <label class="labels">Адрес (место) сделки</label>
-                        <input type="text" class="form-control" placeholder="Введите адрес" value="{{address}}">
+                        <input name="address" type="text" class="form-control" placeholder="Введите адрес"
+                               value="{{address}}" form="editForm">
                     </div>
                     {% else %}
                     <div class="col-md-12">
                         <label class="labels">Адрес (место) сделки</label>
-                        <input type="text" class="form-control" placeholder="Введите адрес" value="">
+                        <input name="address" type="text" class="form-control" placeholder="Введите адрес" value=""
+                               form="editForm">
                     </div>
                     {% endif %}
                     <div class="mt-5 text-center">
-                        <button class="btn btn-primary profile-button" type="button">Сохранить изменения</button>
+                        <button class="btn btn-primary profile-button" type="submit">Сохранить изменения</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
+</form>
 {% endblock %}
