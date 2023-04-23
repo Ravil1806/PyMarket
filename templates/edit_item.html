@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form id="edititemform" method="POST">
+    <main class="form-signin w-50 m-auto">
+        <h1>Редактирование объявления</h1>
+        <div class="form-group mb-2">
+            <label>Категория</label>
+            <select class="form-control" id="categorySelect" name="category" form="edititemform">
+                <option selected disabled="disabled">{{item.category}}</option>
+            </select>
+        </div>
+        <div class="form-group mb-2">
+            <label for="itemnameInput">Название объявления</label>
+            <input required type="text" value="{{item.title}}" name="title" class="form-control" id="itemnameInput"
+                   placeholder="Название товара" form="edititemform">
+        </div>
+        <div class="form-group mb-2">
+            <label>Состояние</label>
+            {% if item.condition == "new" %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="condition" id="newchecked" value="new" form="edititemform"
+                       checked>
+                <label class="form-check-label" for="new">
+                    Новый
+                </label>
+            </div>
+            {% else %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="condition" id="new" value="new" form="edititemform">
+                <label class="form-check-label" for="new">
+                    Новый
+                </label>
+            </div>
+            {% endif %}
+            {% if item.condition == "used" %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="condition" id="usedchecked" value="used"
+                       form="edititemform" checked>
+                <label class="form-check-label" for="used">
+                    Б/у
+                </label>
+            </div>
+            {% else %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="condition" id="used" value="used" form="edititemform">
+                <label class="form-check-label" for="used">
+                    Б/у
+                </label>
+            </div>
+            {% endif %}
+
+        </div>
+        <div class="form-group mb-2">
+            <label for="description">Описание объявления</label>
+            <textarea required class="form-control" id="description" rows="6" name="description" form="edititemform">{{item.description}}</textarea>
+        </div>
+        <div class="form-group mb-2">
+            <label for="priceInput">Цена в рублях</label>
+            <input required type="number" name="price" class="form-control" id="priceInput" placeholder="0" min="0"
+                   max="1000000000" form="edititemform" value="{{item.price}}">
+        </div>
+        <div class="form-group mb-2">
+            <label for="itemsPhotos">Загрузите фотографии</label>
+            <input type="file" name="photos" class="form-control-file" id="itemsPhotos" multiple accept="image/*"
+                   form="edititemform">
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+            <div class="col" style="margin-left: -650px">
+                <button class="btn btn-outline-primary" type="submit" value="DELETE">Удалить</button>
+            </div>
+        </div>
+    </main>
+</form>
+{% endblock %}

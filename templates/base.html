@@ -19,7 +19,7 @@
             <li><a href="/" class="nav-link px-2">Главная страница</a></li>
             <li><a href="/add_item" class="nav-link px-2">Создать объявление</a></li>
             {% if current_user.is_authenticated %}
-            <li><a href="/profile" class="nav-link px-2">Личный кабинет</a></li>
+            <li><a href="/profile/{{current_user.id}}" class="nav-link px-2">Личный кабинет</a></li>
             {% endif %}
         </ul>
         <div class="col-md-3 text-end">

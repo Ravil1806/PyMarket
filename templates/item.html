@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="POST" id="itemform">
+    <h1>{{item.title}}</h1>
+    <div class="container">
+        <div class="card" style="padding: 5px">
+            <a style="color: gray; text-decoration: none" href="/">Категория: {{item.category}}</a>
+            <div class="row">
+                <div class="col-sm text-center align-self-center">
+                    <img class="img-fluid" src="пока нет" alt="attachment">
+                </div>
+                <div class="col-sm text-center">
+                    {% if item.price != 0 %}
+                    <p style="font-size: 20px; margin-bottom: 10px">Цена: {{item.price}} ₽</p>
+                    {% else %}
+                    <p style="font-size: 20px; margin-bottom: 10px">Бесплатно</p>
+                    {% endif %}
+                    {% if condition == new %}
+                    <p style="margin-bottom: 5px">Состояние: новое</p>
+                    {% else %}
+                    <p style="margin-bottom: 5px">Состояние: б/у</p>
+                    {% endif %}
+                    <p style="margin-bottom: 5px">{{item.description}}</p>
+                    <p>Размещено: {{item.created_date.strftime("%H:%M %d.%m.%Y")}}</p>
+                    <div class="col">
+                        {% if current_user != item.user %}
+                        <a class="btn btn-primary" href="/item/{{item.id}}">Забронировать</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if current_user != item.user %}
+                <div class="col-sm" style="text-align: center">
+                    <span class="name mt-3">Продавец: </span>
+                    <a class="name mt-3" href="/profile/{{item.user.id}}">{{item.user.name}}
+                        {{item.user.surname}}<br></a>
+                    {% if item.user.address %}
+                    <span class="text-a" style="word-wrap: normal">Адрес сделки: {{item.user.address}}<br></span>
+                    {% else %}
+                    <span class="text-a" style="word-wrap: normal">Адрес сделки: не указано<br></span>
+                    {% endif %}
+                </div>
+                {% else %}
+                <form action="/edit_item/{{item.id}}" method="POST">
+                    <a class="btn btn-primary" href="/edit_item/{{item.id}}" style="height: 40px; width: 150px; margin-right: 40px; margin-top: 40px;text-align: center">Редактировать</a>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

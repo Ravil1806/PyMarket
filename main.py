@@ -2,7 +2,8 @@ import datetime
 
 from flask import Flask, render_template, request, redirect, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_required, LoginManager, login_user, logout_user, current_user
+from flask_login import login_required, LoginManager, login_user, \
+    logout_user, current_user
 from data import db_session
 from data.item import Item
 from data.user import User
@@ -52,7 +53,7 @@ def signin():
         if user:
             if check_password_hash(user.hashed_password, password):
                 login_user(user, remember=True)
-                return redirect('/profile')
+                return redirect('/')
             else:
                 flash('Неверный пароль')
                 return redirect('/sign_in')
@@ -77,7 +78,8 @@ def signup():
         user.email = request.form['email']
         user.name = request.form['name']
         user.surname = request.form['surname']
-        user.hashed_password = generate_password_hash(request.form['password'])
+        user.hashed_password = generate_password_hash\
+            (request.form['password'])
         if session.query(User).filter_by(email=user.email).first():
             flash('Аккаунт с данной эл. почтой уже существует')
             return redirect('/sign_up')
@@ -87,7 +89,7 @@ def signup():
         else:
             session.add(user)
             session.commit()
-            return redirect('/')
+            return redirect('/sign_in')
     return render_template('sign_up.html', title='Регистрация')
 
 
@@ -114,16 +116,51 @@ def additem():
                                categories=categories)
 
 
-@app.route('/profile')
+@app.route('/item/<int:item_id>', methods=['GET', 'POST'])
 @login_required
-def profile():
-    return render_template('profile.html', name=current_user.name,
-                           surname=current_user.surname,
-                           email=current_user.email,
-                           number=current_user.phone_number,
-                           date=current_user.created_date.strftime("%d.%m.%Y"),
-                           address=current_user.address,
-                           items=len([i for i in current_user.items]),
+def item(item_id):
+    cur_item = session.get(Item, item_id)
+    if request.method == 'POST':
+        pass
+    else:
+        return render_template('item.html', title=f'Объявление',
+                               item=cur_item)
+
+
+@app.route('/edit_item/<int:item_id>', methods=['GET', 'POST', 'DELETE'])
+@login_required
+def edititem(item_id):
+    cur_item = session.get(Item, item_id)
+    if request.method == 'POST':
+        cur_item.title = request.form['title']
+        cur_item.condition = request.form['condition']
+        cur_item.description = request.form['description']
+        cur_item.price = request.form['price']
+        session.commit()
+        return redirect(f'/item/{cur_item.id}')
+    elif request.method == 'DELETE':
+        session.delete(cur_item)
+        session.commit()
+        return redirect('/')
+    else:
+        return render_template('edit_item.html',
+                               title='Редактирование объявления',
+                               item=cur_item)
+
+
+@app.route('/profile/<int:user_id>')
+@login_required
+def profile(user_id):
+    user_prof = load_user(user_id)
+    return render_template('profile.html', name=user_prof.name,
+                           surname=user_prof.surname,
+                           email=user_prof.email,
+                           number=user_prof.phone_number,
+                           date=user_prof.created_date.strftime("%d.%m.%Y"),
+                           address=user_prof.address,
+                           num_items=len([i for i in user_prof.items]),
+                           items=user_prof.items,
+                           owner=bool(current_user.id == user_id),
                            title='Личний кабинет')
 
 
@@ -135,18 +172,16 @@ def editprofile():
         current_user.surname = request.form['surname']
         current_user.address = request.form['address']
         current_user.phone_number = request.form['phone_number']
-        try:
-            session.commit()
-            return redirect('/profile')
-        except Exception as e:
-            return f'{e}'
+        session.commit()
+        return redirect('/profile')
     else:
-        return render_template('edit_profile.html', title='Редактирвоание профиля',
-                           name=current_user.name,
-                           surname=current_user.surname,
-                           email=current_user.email,
-                           number=current_user.phone_number,
-                           address=current_user.address)
+        return render_template('edit_profile.html',
+                               title='Редактирвоание профиля',
+                               name=current_user.name,
+                               surname=current_user.surname,
+                               email=current_user.email,
+                               number=current_user.phone_number,
+                               address=current_user.address)
 
 
 def main():

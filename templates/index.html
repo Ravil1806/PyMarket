@@ -10,9 +10,17 @@
                 <img src="пока нет" class="card-img-top" alt="attachment">
                 <div class="card-body">
                     <a class="card-title" style="text-decoration: none; font-size: 24px" href="/item/{{item.id}}">{{item.title}}</a>
+                    {% if item.price != 0 %}
                     <p class="card-text">{{item.price}} ₽</p>
+                    {% else %}
+                    <p class="card-text">Бесплатно</p>
+                    {% endif %}
+                    {% if item.user.address %}
                     <p class="card-text" style="color: gray">{{item.user.address}}</p>
-                    <p class="card-text" style="color: gray">{{item.created_date.strftime("%H:%M %d.%m.%Y")}}</p>
+                    {% else %}
+                    <p class="card-text" style="color: gray">Место сделки: не указан</p>
+                    {% endif %}
+                    <p class="card-text" style="color: gray">Размещено: {{item.created_date.strftime("%H:%M %d.%m.%Y")}}</p>
                 </div>
             </div>
         {% endfor %}
