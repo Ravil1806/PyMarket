@@ -104,7 +104,7 @@ def additem():
         item.description = request.form['description']
         item.price = request.form['price']
         item.user_id = current_user.id
-        # item.photos = request.files['photos']
+        item.photos = request.files.getlist("photos")
         try:
             session.add(item)
             session.commit()
@@ -146,6 +146,13 @@ def edititem(item_id):
         return render_template('edit_item.html',
                                title='Редактирование объявления',
                                item=cur_item)
+
+
+@app.route('/delete_item/<int:item_id>', methods=['GET', 'DELETE'])
+def delete_news(item_id):
+    session.delete(session.get(Item, item_id))
+    session.commit()
+    return redirect('/')
 
 
 @app.route('/profile/<int:user_id>')

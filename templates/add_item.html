@@ -1,51 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form id="newform" method="POST">
-        <main class="form-signin w-50 m-auto">
-            <h1>Новое объявление</h1>
-            <div class="form-group mb-2">
-                <label for="catSelect">Выберите категорию</label>
-                <select class="form-control" id="categorySelect" name="category" form="newform">
-                    {% for category in categories %}
-                    <option>{{category}}</option>
-                    {% endfor %}
-                </select>
+<form id="newform" method="POST">
+    <main class="form-signin w-50 m-auto">
+        <h1>Новое объявление</h1>
+        <div class="form-group mb-2">
+            <label for="newform">Выберите категорию</label>
+            <select class="form-control" id="categorySelect" name="category" form="newform">
+                {% for category in categories %}
+                <option>{{category}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-2">
+            <label for="itemnameInput">Название объявления</label>
+            <input required type="text" name="title" class="form-control" id="itemnameInput"
+                   placeholder="Название товара" form="newform">
+        </div>
+        <div class="form-group mb-2">
+            <label for="newform">Состояние</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="condition" id="new" value="new" form="newform">
+                <label class="form-check-label" for="new">
+                    Новый
+                </label>
             </div>
-            <div class="form-group mb-2">
-                <label for="itemnameInput">Название объявления</label>
-                <input required type="text" name="title" class="form-control" id="itemnameInput" placeholder="Название товара" form="newform">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="condition" id="used" value="used" form="newform"
+                       checked>
+                <label class="form-check-label" for="used">
+                    Б/у
+                </label>
             </div>
-            <div class="form-group mb-2">
-                <label for="form-check">Состояние</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="condition" id="new" value="new" form="newform">
-                    <label class="form-check-label" for="new">
-                        Новый
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="condition" id="used" value="used" form="newform" checked>
-                    <label class="form-check-label" for="used">
-                        Б/у
-                    </label>
-                </div>
-            </div>
-            <div class="form-group mb-2">
-                <label for="description">Описание объявления</label>
-                <textarea required class="form-control" id="description" rows="6" name="description" form="newform"></textarea>
-            </div>
-            <div class="form-group mb-2">
-                <label for="priceInput">Цена в рублях</label>
-                <input required type="number" name="price" class="form-control" id="priceInput" placeholder="0" min="0" max="1000000000" form="newform" value="0">
-            </div>
-            <div class="form-group mb-2">
-                <label for="itemsPhotos">Загрузите фотографии</label>
-                <input type="file" name="photos" class="form-control-file" id="itemsPhotos" multiple accept="image/*" form="newform">
-            </div>
-            <form action="/add_item" method="POST">
-                <button type="submit" class="btn btn-primary">Разместить</button>
-            </form>
-        </main>
-    </form>
+        </div>
+        <div class="form-group mb-2">
+            <label for="description">Описание объявления</label>
+            <textarea required class="form-control" id="description" rows="6" name="description"
+                      form="newform"></textarea>
+        </div>
+        <div class="form-group mb-2">
+            <label for="priceInput">Цена в рублях</label>
+            <input required type="number" name="price" class="form-control" id="priceInput" placeholder="0" min="0"
+                   max="1000000000" form="newform" value="0">
+        </div>
+        <form method="POST">
+            <input type="file" name="photos" class="form-control-file" id="itemsPhotos" multiple accept="image/*"
+                   form="newform" required>
+            <button type="submit" class="btn btn-primary">Разместить</button>
+        </form>
+    </main>
+</form>
 {% endblock %}
