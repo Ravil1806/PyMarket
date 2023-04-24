@@ -1,6 +1,7 @@
 import datetime
+from io import BytesIO
 
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
     logout_user, current_user
@@ -104,7 +105,8 @@ def additem():
         item.description = request.form['description']
         item.price = request.form['price']
         item.user_id = current_user.id
-        item.photos = request.files.getlist("photos")
+        # item.photos = send_file(BytesIO(request.files['photos']),
+        #                         download_name=request.files['photos'].filename, as_attachment=True)
         try:
             session.add(item)
             session.commit()
