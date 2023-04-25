@@ -1,10 +1,9 @@
-import datetime
-from io import BytesIO
-
-from flask import Flask, render_template, request, redirect, flash, send_file
+from flask import Flask, render_template, request, redirect, flash, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
     logout_user, current_user
+from werkzeug.utils import secure_filename
+
 from data import db_session
 from data.item import Item
 from data.user import User
@@ -94,6 +93,12 @@ def signup():
     return render_template('sign_up.html', title='Регистрация')
 
 
+@app.route('/<int:item_id>')
+def get_img(item_id):
+    img = session.query(Item).filter_by(id=item_id).first()
+    return Response(img.photos, mimetype=img.mimetype)
+
+
 @app.route('/add_item', methods=['GET', 'POST'])
 @login_required
 def additem():
@@ -105,8 +110,8 @@ def additem():
         item.description = request.form['description']
         item.price = request.form['price']
         item.user_id = current_user.id
-        # item.photos = send_file(BytesIO(request.files['photos']),
-        #                         download_name=request.files['photos'].filename, as_attachment=True)
+        f = request.files['photos']
+        item.photos = f.read()
         try:
             session.add(item)
             session.commit()
@@ -151,10 +156,14 @@ def edititem(item_id):
 
 
 @app.route('/delete_item/<int:item_id>', methods=['GET', 'DELETE'])
-def delete_news(item_id):
-    session.delete(session.get(Item, item_id))
-    session.commit()
-    return redirect('/')
+def delete_item(item_id):
+    cur_item = session.get(Item, item_id)
+    if current_user == cur_item.user:
+        session.delete(cur_item)
+        session.commit()
+        return redirect('/')
+    else:
+        return redirect(f'/profile/{current_user.id}')
 
 
 @app.route('/profile/<int:user_id>')

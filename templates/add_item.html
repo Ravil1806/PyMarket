@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form id="newform" method="POST">
+<form id="newform" method="POST" enctype="multipart/form-data">
     <main class="form-signin w-50 m-auto">
         <h1>Новое объявление</h1>
         <div class="form-group mb-2">
@@ -43,11 +43,9 @@
             <input required type="number" name="price" class="form-control" id="priceInput" placeholder="0" min="0"
                    max="1000000000" form="newform" value="0">
         </div>
-        <form method="POST">
-            <input type="file" name="photos" class="form-control-file" id="itemsPhotos" multiple accept="image/*"
-                   form="newform" required>
-            <button type="submit" class="btn btn-primary">Разместить</button>
-        </form>
+        <input type="file" name="photos" class="form-control-file" id="itemsPhotos" multiple accept="image/*"
+               form="newform" required>
+        <input type="submit" class="btn btn-primary" value="Разместить">
     </main>
 </form>
 {% endblock %}

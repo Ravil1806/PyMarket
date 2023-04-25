@@ -14,7 +14,7 @@ class Item(SqlAlchemyBase):
     condition = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
-    photos = sqlalchemy.Column(sqlalchemy.LargeBinary)  # доработать
+    photos = sqlalchemy.Column(sqlalchemy.Text, unique=True)  # доработать
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
 
