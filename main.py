@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, flash, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
     logout_user, current_user
-from werkzeug.utils import secure_filename
 
 from data import db_session
 from data.item import Item
