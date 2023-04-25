@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, Response
+from flask import Flask, render_template, request, redirect, flash, Response, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
     logout_user, current_user
@@ -109,8 +109,9 @@ def additem():
         item.description = request.form['description']
         item.price = request.form['price']
         item.user_id = current_user.id
-        f = request.files['photos']
-        item.photos = f.read()
+        file = request.files['photos']
+        item.photos = file.read()
+        item.mimetype = file.mimetype
         try:
             session.add(item)
             session.commit()
