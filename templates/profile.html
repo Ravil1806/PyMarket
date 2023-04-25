@@ -46,7 +46,7 @@
         <div id="cards-container" style="display: flex; flex-wrap: wrap; margin-left: 200px; margin-right: 190px">
         {% for item in items %}
             <div id="itemcard" class="card" style="width: 32.5%; margin-right: 10px; margin-bottom: 10px">
-                <img src="пока нет" class="card-img-top" alt="attachment">
+                <img src="{{url_for('get_img', item_id=item.id)}}" class="card-img-top" alt="attachment">
                 <div class="card-body">
                     <a class="card-title" style="text-decoration: none; font-size: 24px" href="/item/{{item.id}}">{{item.title}}</a>
                     <p class="card-text">{{item.price}} ₽</p>

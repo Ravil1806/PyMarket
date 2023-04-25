@@ -143,6 +143,9 @@ def edititem(item_id):
         cur_item.condition = request.form['condition']
         cur_item.description = request.form['description']
         cur_item.price = request.form['price']
+        file = request.files['photos']
+        cur_item.photos = file.read()
+        cur_item.mimetype = file.mimetype
         session.commit()
         return redirect(f'/item/{cur_item.id}')
     elif request.method == 'DELETE':

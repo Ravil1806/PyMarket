@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form id="edititemform" method="POST">
+<form id="edititemform" method="POST" enctype="multipart/form-data">
     <main class="form-signin w-50 m-auto">
         <h1>Редактирование объявления</h1>
         <div class="form-group mb-2">
@@ -63,13 +63,13 @@
                    max="1000000000" form="edititemform" value="{{item.price}}">
         </div>
         <div class="form-group mb-2">
-            <label for="itemsPhotos">Загрузите фотографии</label>
+            <label for="itemsPhotos">З агрузите фотографии</label>
             <input type="file" name="photos" class="form-control-file" id="itemsPhotos" multiple accept="image/*"
                    form="edititemform">
         </div>
         <div class="row">
             <div class="col">
-                <button class="btn btn-primary" type="submit">Сохранить</button>
+                <input class="btn btn-primary" type="submit" value="Сохранить">
             </div>
             <div class="col" style="margin-left: -650px">
                 <a class="btn btn-outline-primary" type="submit" onclick="window.suredelete.showModal()">Удалить</a>

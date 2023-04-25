@@ -8,7 +8,7 @@
             <a style="color: gray; text-decoration: none" href="/">Категория: {{item.category}}</a>
             <div class="row">
                 <div class="col-sm text-center align-self-center">
-                    <img class="img-fluid" src="{{item.photos}}" alt="attachment">
+                    <img class="img-fluid" src="{{url_for('get_img', item_id=item.id)}}" alt="attachment">
                 </div>
                 <div class="col-sm text-center">
                     {% if item.price != 0 %}
