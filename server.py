@@ -4,14 +4,11 @@ from itsdangerous import URLSafeTimedSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
     logout_user, current_user
-from flask_mail import Message, Mail
 from data import db_session
 from data.item import Item
 from data.user import User
 
 app = Flask(__name__)
-mail = Mail()
-mail.init_app(app)
 
 app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
