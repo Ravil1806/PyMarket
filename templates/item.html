@@ -24,8 +24,12 @@
                     <p style="margin-bottom: 5px">{{item.description}}</p>
                     <p>Размещено: {{item.created_date.strftime("%H:%M %d.%m.%Y")}}</p>
                     <div class="col">
-                        {% if current_user != item.user %}
-                        <a class="btn btn-primary" href="/item/{{item.id}}">Забронировать</a>
+                        {% if not booked %}
+                            {% if current_user != item.user %}
+                                <button class="btn btn-primary" type="submit" form="itemform" name="booked" value="True">Забронировать</button>
+                            {% endif %}
+                        {% else %}
+                            <p>Забронировано</p>
                         {% endif %}
                     </div>
                 </div>
@@ -42,7 +46,8 @@
                 </div>
                 {% else %}
                 <form action="/edit_item/{{item.id}}" method="POST">
-                    <a class="btn btn-primary" href="/edit_item/{{item.id}}" style="height: 40px; width: 150px; margin-right: 40px; margin-top: 40px;text-align: center">Редактировать</a>
+                    <a class="btn btn-primary" href="/edit_item/{{item.id}}"
+                       style="height: 40px; width: 150px; margin-right: 40px; margin-top: 40px;text-align: center">Редактировать</a>
                 </form>
                 {% endif %}
             </div>

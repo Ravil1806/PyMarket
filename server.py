@@ -130,10 +130,13 @@ def additem():
 def item(item_id):
     cur_item = session.get(Item, item_id)
     if request.method == 'POST':
-        pass
+        if request.form['booked'] == 'True':
+            cur_item.booked = True
+        session.commit()
+        return redirect(f'/item/{cur_item.id}')
     else:
         return render_template('item.html', title=f'Объявление',
-                               item=cur_item)
+                               item=cur_item, booked=cur_item.booked)
 
 
 @app.route('/edit_item/<int:item_id>', methods=['GET', 'POST', 'DELETE'])
@@ -196,7 +199,7 @@ def editprofile():
         current_user.address = request.form['address']
         current_user.phone_number = request.form['phone_number']
         session.commit()
-        return redirect('/profile')
+        return redirect(f'/profile/{current_user.id}')
     else:
         return render_template('edit_profile.html',
                                title='Редактирвоание профиля',
