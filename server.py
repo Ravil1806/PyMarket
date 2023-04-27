@@ -1,15 +1,20 @@
-from flask import Flask, render_template, request, redirect, flash, Response, url_for
+import os
+from flask import Flask, render_template, request, redirect, flash, Response
+from itsdangerous import URLSafeTimedSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
     logout_user, current_user
-
+from flask_mail import Message, Mail
 from data import db_session
 from data.item import Item
 from data.user import User
 
 app = Flask(__name__)
-app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
+mail = Mail()
+mail.init_app(app)
 
+app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
+s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 categories = ['Одежда/обувь/аксессуары', 'Бижутерия/украшения',
               'Косметика/парфюмерия', 'Бытовая техника для дома/кухни',
@@ -77,8 +82,9 @@ def signup():
         user.email = request.form['email']
         user.name = request.form['name']
         user.surname = request.form['surname']
-        user.hashed_password = generate_password_hash\
+        user.hashed_password = generate_password_hash \
             (request.form['password'])
+        user.confirmed = False
         if session.query(User).filter_by(email=user.email).first():
             flash('Аккаунт с данной эл. почтой уже существует')
             return redirect('/sign_up')
@@ -110,8 +116,8 @@ def additem():
         item.price = request.form['price']
         item.user_id = current_user.id
         file = request.files['photos']
-        item.photos = file.read()
-        item.mimetype = file.mimetype
+        item.photos += file.read()
+        item.mimetype += file.mimetype
         try:
             session.add(item)
             session.commit()
@@ -207,7 +213,8 @@ def editprofile():
 
 def main():
     db_session.global_init("main.db")
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='127.0.0.1', port=port, debug=True)
 
 
 if __name__ == '__main__':
