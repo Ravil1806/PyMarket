@@ -9,7 +9,6 @@ from data.item import Item
 from data.user import User
 
 app = Flask(__name__)
-
 app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
