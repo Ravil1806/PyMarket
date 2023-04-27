@@ -112,8 +112,8 @@ def additem():
         item.price = request.form['price']
         item.user_id = current_user.id
         file = request.files['photos']
-        item.photos += file.read()
-        item.mimetype += file.mimetype
+        item.photos = file.read()
+        item.mimetype = file.mimetype
         try:
             session.add(item)
             session.commit()
