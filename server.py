@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
+# Категории товаров
 categories = ['Одежда/обувь/аксессуары', 'Бижутерия/украшения',
               'Косметика/парфюмерия', 'Бытовая техника для дома/кухни',
               'Мебель/интерьер', 'Товары для кухни', 'Продукты питания',
@@ -24,26 +25,30 @@ categories = ['Одежда/обувь/аксессуары', 'Бижутери�
               'Коллекционные предметы', 'Музыкальные инструменты',
               'Животные/товары для животных']
 
+# Сессия
 db_session.global_init("main.db")
 session = db_session.create_session()
-
+# Для авторизации
 login_manager = LoginManager()
 login_manager.login_view = '/sign_in'
 login_manager.login_message = 'Необходимо войти в свой аккаунт'
 login_manager.init_app(app)
 
 
+# Загрузка пользователя
 @login_manager.user_loader
 def load_user(user_id):
     return session.get(User, int(user_id))
 
 
+# Главная страница
 @app.route('/')
 def index():
     return render_template('index.html', title='Главная страница',
                            items=session.query(Item))
 
 
+# Страница авторизации
 @app.route('/sign_in', methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
@@ -64,6 +69,7 @@ def signin():
         return render_template('sign_in.html', title='Авторизация')
 
 
+# Страница выхода
 @app.route('/sign_out', methods=['GET', 'POST'])
 @login_required
 def signout():
@@ -71,6 +77,7 @@ def signout():
     return redirect('/')
 
 
+# Страница регистрации
 @app.route('/sign_up', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -94,12 +101,14 @@ def signup():
     return render_template('sign_up.html', title='Регистрация')
 
 
+# Получение изображения
 @app.route('/<int:item_id>')
 def get_img(item_id):
     img = session.query(Item).filter_by(id=item_id).first()
     return Response(img.photos, mimetype=img.mimetype)
 
 
+# Страница добавления товара
 @app.route('/add_item', methods=['GET', 'POST'])
 @login_required
 def additem():
@@ -125,6 +134,7 @@ def additem():
                                categories=categories)
 
 
+# Страница товара
 @app.route('/item/<int:item_id>', methods=['GET', 'POST'])
 @login_required
 def item(item_id):
@@ -143,6 +153,7 @@ def item(item_id):
                                item=cur_item, booked=cur_item.booked)
 
 
+# Страница редактирования товара
 @app.route('/edit_item/<int:item_id>', methods=['GET', 'POST', 'DELETE'])
 @login_required
 def edititem(item_id):
@@ -169,6 +180,7 @@ def edititem(item_id):
                                item=cur_item)
 
 
+# Удаление товара
 @app.route('/delete_item/<int:item_id>', methods=['GET', 'DELETE'])
 @login_required
 def delete_item(item_id):
@@ -181,6 +193,7 @@ def delete_item(item_id):
         return redirect(f'/profile/{current_user.id}')
 
 
+# Страница профиля
 @app.route('/profile/<int:user_id>')
 @login_required
 def profile(user_id):
@@ -197,6 +210,7 @@ def profile(user_id):
                            title='Личний кабинет')
 
 
+# Страница редактирования профиля
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def editprofile():
@@ -217,11 +231,13 @@ def editprofile():
                                address=current_user.address)
 
 
+# Запуск
 def main():
     db_session.global_init("main.db")
     port = int(os.environ.get("PORT", 5000))
     app.run(host='127.0.0.1', port=port, debug=True)
 
 
+# ЗАПУСК
 if __name__ == '__main__':
     main()
