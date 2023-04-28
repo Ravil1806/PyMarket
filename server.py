@@ -1,6 +1,5 @@
 import os
 from flask import Flask, render_template, request, redirect, flash, Response
-from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
@@ -11,8 +10,6 @@ from data.user import User
 
 app = Flask(__name__)
 app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
-mail = Mail()
-mail.init_app(app)
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 categories = ['Одежда/обувь/аксессуары', 'Бижутерия/украшения',
@@ -98,7 +95,6 @@ def signup():
 
 
 @app.route('/<int:item_id>')
-@login_required
 def get_img(item_id):
     img = session.query(Item).filter_by(id=item_id).first()
     return Response(img.photos, mimetype=img.mimetype)
