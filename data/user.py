@@ -14,7 +14,8 @@ class User(SqlAlchemyBase, UserMixin):
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     address = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
-    confirmed = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
+    confirmed = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False,
+                                  default=False)  # на будущее
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     phone_number = sqlalchemy.Column(sqlalchemy.String)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,

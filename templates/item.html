@@ -10,18 +10,18 @@
                 <div class="col-sm text-center align-self-center">
                     <img class="img-fluid" src="{{url_for('get_img', item_id=item.id)}}" alt="attachment">
                 </div>
-                <div class="col-sm text-center">
+                <div class="col-sm">
                     {% if item.price != 0 %}
-                    <p style="font-size: 20px; margin-bottom: 10px">Цена: {{item.price}} ₽</p>
+                    <p style="font-size: 25px; margin-bottom: 10px; text-align: center">Цена: {{item.price}} ₽</p>
                     {% else %}
                     <p style="font-size: 20px; margin-bottom: 10px">Бесплатно</p>
                     {% endif %}
-                    {% if condition == new %}
+                    {% if item.condition == 'new' %}
                     <p style="margin-bottom: 5px">Состояние: новое</p>
                     {% else %}
                     <p style="margin-bottom: 5px">Состояние: б/у</p>
                     {% endif %}
-                    <p style="margin-bottom: 5px">{{item.description}}</p>
+                    <p style="margin-bottom: 5px; white-space: pre" >{{item.description}}</p>
                     <p>Размещено: {{item.created_date.strftime("%H:%M %d.%m.%Y")}}</p>
                     <div class="col">
                         {% if not booked %}
@@ -29,7 +29,15 @@
                                 <button class="btn btn-primary" type="submit" form="itemform" name="booked" value="True">Забронировать</button>
                             {% endif %}
                         {% else %}
-                            <p>Забронировано</p>
+                            {% if not item.completed %}
+                                {% if current_user == item.user %}
+                                    <button class="btn btn-primary" type="submit" form="itemform" name="completed" value="True">Закрыть</button>
+                                {% else %}
+                                        <p>Забронировано</p>
+                                {% endif %}
+                            {% else %}
+                                <p>Объявление закрыто</p>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -45,10 +53,12 @@
                     {% endif %}
                 </div>
                 {% else %}
+                {% if not item.completed %}
                 <form action="/edit_item/{{item.id}}" method="POST">
                     <a class="btn btn-primary" href="/edit_item/{{item.id}}"
                        style="height: 40px; width: 150px; margin-right: 40px; margin-top: 40px;text-align: center">Редактировать</a>
                 </form>
+                {% endif %}
                 {% endif %}
             </div>
         </div>

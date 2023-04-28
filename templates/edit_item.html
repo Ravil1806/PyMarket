@@ -3,6 +3,8 @@
 {% block content %}
 <form id="edititemform" method="POST" enctype="multipart/form-data">
     <main class="form-signin w-50 m-auto">
+        {% if current_user == item.user %}
+        {% if not item.completed %}
         <h1>Редактирование объявления</h1>
         <div class="form-group mb-2">
             <label>Категория</label>
@@ -16,42 +18,23 @@
                    placeholder="Название товара" form="edititemform">
         </div>
         <div class="form-group mb-2">
-            <label>Состояние</label>
-            {% if item.condition == "new" %}
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="condition" id="newchecked" value="new"
-                       form="edititemform"
-                       checked>
-                <label class="form-check-label" for="new">
-                    Новый
-                </label>
-            </div>
-            {% else %}
-            <div class="form-check">
+            <label for="edititemform">Состояние</label>
+                {% if item.condition == 'new' %}
+                <input class="form-check-input" type="radio" name="condition" id="newch" value="new" form="edititemform" checked>
+                {% else %}
                 <input class="form-check-input" type="radio" name="condition" id="new" value="new" form="edititemform">
+                {% endif %}
                 <label class="form-check-label" for="new">
                     Новый
                 </label>
-            </div>
-            {% endif %}
-            {% if item.condition == "used" %}
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="condition" id="usedchecked" value="used"
-                       form="edititemform" checked>
+                {% if item.condition == 'used' %}
+                <input class="form-check-input" type="radio" name="condition" id="usedch" value="used" form="edititemform" checked>
+                {% else %}
+                <input class="form-check-input" type="radio" name="condition" id="used" value="used" form="edititemform">
+                {% endif %}
                 <label class="form-check-label" for="used">
                     Б/у
                 </label>
-            </div>
-            {% else %}
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="condition" id="used" value="used"
-                       form="edititemform">
-                <label class="form-check-label" for="used">
-                    Б/у
-                </label>
-            </div>
-            {% endif %}
-
         </div>
         <div class="form-group mb-2">
             <label for="description">Описание объявления</label>
@@ -85,6 +68,12 @@
                 </dialog>
             </div>
         </div>
+        {% else %}
+        <h2 style="text-align: center">Объявлените закрыто</h2>
+        {% endif %}
+        {% else %}
+        <h2 style="text-align: center">Нельзя!</h2>
+        {% endif %}
     </main>
 </form>
 {% endblock %}

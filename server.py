@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, flash, Response
+from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, login_user, \
@@ -10,6 +11,8 @@ from data.user import User
 
 app = Flask(__name__)
 app.secret_key = b'\xedw:~`\xe8&\x8e\x15\xf9)\xc5X#\xac('
+mail = Mail()
+mail.init_app(app)
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 categories = ['Одежда/обувь/аксессуары', 'Бижутерия/украшения',
@@ -78,8 +81,8 @@ def signup():
         user.email = request.form['email']
         user.name = request.form['name']
         user.surname = request.form['surname']
-        user.hashed_password = generate_password_hash \
-            (request.form['password'])
+        user.hashed_password = generate_password_hash(
+            request.form['password'])
         user.confirmed = False
         if session.query(User).filter_by(email=user.email).first():
             flash('Аккаунт с данной эл. почтой уже существует')
@@ -95,6 +98,7 @@ def signup():
 
 
 @app.route('/<int:item_id>')
+@login_required
 def get_img(item_id):
     img = session.query(Item).filter_by(id=item_id).first()
     return Response(img.photos, mimetype=img.mimetype)
@@ -104,18 +108,18 @@ def get_img(item_id):
 @login_required
 def additem():
     if request.method == 'POST':
-        item = Item()
-        item.category = request.form['category']
-        item.title = request.form['title']
-        item.condition = request.form['condition']
-        item.description = request.form['description']
-        item.price = request.form['price']
-        item.user_id = current_user.id
+        new_item = Item()
+        new_item.category = request.form['category']
+        new_item.title = request.form['title']
+        new_item.condition = request.form['condition']
+        new_item.description = request.form['description']
+        new_item.price = request.form['price']
+        new_item.user_id = current_user.id
         file = request.files['photos']
-        item.photos = file.read()
-        item.mimetype = file.mimetype
+        new_item.photos = file.read()
+        new_item.mimetype = file.mimetype
         try:
-            session.add(item)
+            session.add(new_item)
             session.commit()
             return redirect('/')
         except Exception as e:
@@ -130,8 +134,12 @@ def additem():
 def item(item_id):
     cur_item = session.get(Item, item_id)
     if request.method == 'POST':
-        if request.form['booked'] == 'True':
-            cur_item.booked = True
+        if current_user == cur_item.user:
+            if request.form['completed'] == 'True':
+                cur_item.completed = True
+        else:
+            if request.form['booked'] == 'True':
+                cur_item.booked = True
         session.commit()
         return redirect(f'/item/{cur_item.id}')
     else:
@@ -149,8 +157,10 @@ def edititem(item_id):
         cur_item.description = request.form['description']
         cur_item.price = request.form['price']
         file = request.files['photos']
-        cur_item.photos = file.read()
-        cur_item.mimetype = file.mimetype
+        readed = file.read()
+        if len(readed) > 0:
+            cur_item.photos = readed
+            cur_item.mimetype = file.mimetype
         session.commit()
         return redirect(f'/item/{cur_item.id}')
     elif request.method == 'DELETE':
@@ -164,9 +174,10 @@ def edititem(item_id):
 
 
 @app.route('/delete_item/<int:item_id>', methods=['GET', 'DELETE'])
+@login_required
 def delete_item(item_id):
     cur_item = session.get(Item, item_id)
-    if current_user == cur_item.user:
+    if current_user == cur_item.user and not cur_item.completed:
         session.delete(cur_item)
         session.commit()
         return redirect('/')

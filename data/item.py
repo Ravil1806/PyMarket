@@ -17,6 +17,7 @@ class Item(SqlAlchemyBase):
     photos = sqlalchemy.Column(sqlalchemy.Text)
     mimetype = sqlalchemy.Column(sqlalchemy.Text, nullable=False)
     booked = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
+    completed = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
 
